@@ -8,33 +8,32 @@ from dagster import (
     Definitions, AutoMaterializePolicy, AssetSelection, in_process_executor,
 )
 
+start = (date.today() - timedelta(days=3)).isoformat()
 colors = ["red", "yellow", "blue"]
 shapes = ["square", "round"]
-colorshapes = [f'{clr}/{shp}' for clr, shp in product(colors, shapes)]
-start = (date.today() - timedelta(days=3)).isoformat()
+color_shapes = [f'{c}/{s}' for c, s in product(colors, shapes)]
 
 datep = DailyPartitionsDefinition(start_date=start)
-colorp = StaticPartitionsDefinition(colors)
-shapesp = StaticPartitionsDefinition(shapes)
-
-multip = MultiPartitionsDefinition({
-    "date": datep,
-    "cs": StaticPartitionsDefinition(colorshapes),
+colorp = MultiPartitionsDefinition({
+    'color': StaticPartitionsDefinition(colors),
+    'date': datep
+})
+shapesp = MultiPartitionsDefinition({
+    'shapes': StaticPartitionsDefinition(shapes),
+    'date': datep
 })
 
-@asset(
-    partitions_def=datep
-)
+multip = MultiPartitionsDefinition({
+    "colored_shapes": StaticPartitionsDefinition(color_shapes),
+    "date": datep,
+
+})
+
+@asset(partitions_def=colorp)
 def up_a():
     return [1, 2, 3]
 
 @asset(partitions_def=shapesp)
-def up_c():
-    return [11, 22, 33]
-
-@asset(
-    partitions_def=colorp
-)
 def up_b():
     return ['a', 'b']
 
@@ -42,8 +41,8 @@ def up_b():
     partitions_def=multip,
     #auto_materialize_policy=AutoMaterializePolicy.eager(),
 )
-def multi_partitions_asset(context, up_a, up_c, up_b):
-    return up_a + up_c + up_b
+def multi_partitions_asset(context, up_a, up_b):
+    return up_a + up_b
 
 
 myjob = define_asset_job('test_job',
@@ -54,6 +53,6 @@ myjob = define_asset_job('test_job',
 
 defs = Definitions(
     #jobs=[myjob],
-    assets=[up_a, up_b, up_c, multi_partitions_asset],
+    assets=[up_a, up_b, multi_partitions_asset],
 )
 

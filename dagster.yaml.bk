@@ -1,0 +1,11 @@
+instance_class:
+  module: dagster_cloud.instance
+  class: DagsterCloudAgentInstance
+
+dagster_cloud_api:
+  agent_token: agent:hybridtest:64faa5ed2e2c4b6590a94b8d20c03328
+  deployment: prod
+
+user_code_launcher:
+  module: dagster_cloud.workspace.user_code_launcher
+  class: ProcessUserCodeLauncher

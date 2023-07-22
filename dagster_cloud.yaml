@@ -1,4 +1,5 @@
 locations:
-- code_source:
-    package_name: quickstart_etl
-  location_name: dagster_poc
+  - location_name: 3d_multi
+    code_source:
+      package_name: 3d_multi
+    working_directory: ./examples

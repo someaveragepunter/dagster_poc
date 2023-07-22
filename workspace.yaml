@@ -1,0 +1,4 @@
+load_from:
+  - python_file: examples/multi_partitions.py
+  - python_file: examples/static_mappings.py
+  - python_file: examples/grouped_partitions.py
