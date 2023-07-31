@@ -42,6 +42,8 @@ multi_partitions = {k: MultiPartitionsDefinition({'dates': DateP, k: v}) for k, 
 
 #################################### ASSET DEF ############################################
 
+
+
 @asset(partitions_def=multi_partitions['a'])
 def assetA(): return [1, 2, 3]
 @asset(partitions_def=multi_partitions['b'])
@@ -80,7 +82,7 @@ def assetABC(assetA, assetBC):
 #     executor_def=in_process_executor,
 # )
 
-# defn = Definitions(
-#     assets=[assetB, assetC, assetBC],
-#     jobs=[partitioned_asset_job],
-# )
+defn = Definitions(
+    assets=[assetB, assetC, assetBC],
+    # jobs=[partitioned_asset_job],
+)
